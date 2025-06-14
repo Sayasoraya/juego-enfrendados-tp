@@ -3,23 +3,20 @@
 #include <time.h>  // Necesario para usar rand()
 
 typedef struct {
-    char nombre[30];      // para guardar el nombre del jugador
-    int puntos;           // para guardar los puntos acumulados
-    int dados[20];        // para guardar los valores de sus dados (6 dados al empezar)
-    int cantidadDados;    // cuantos dados tiene actualmente
+    char nombre[30];
+    int puntos;
+    int dados[20];
+    int cantidadDados;
 } Jugador;
 
-// Tirar un dado de 6 caras
 int tirarDado6() {
     return rand() % 6 + 1;
 }
 
-// Tirar un dado de 12 caras
 int tirarDado12() {
     return rand() % 12 + 1;
 }
 
-// Pedir los nombres de los jugadores e inicializar puntos y dados
 void inicializarJugadores(Jugador *j1, Jugador *j2) {
     printf("\nIngrese el nombre del Jugador 1: ");
     scanf("%s", j1->nombre);
@@ -32,10 +29,8 @@ void inicializarJugadores(Jugador *j1, Jugador *j2) {
     j2->cantidadDados = 6;
 }
 
-// Determinar quien empieza tirando un dado
 Jugador* decidirInicio(Jugador *j1, Jugador *j2) {
     int dado1, dado2;
-
     do {
         dado1 = tirarDado6();
         dado2 = tirarDado6();
@@ -51,12 +46,30 @@ Jugador* decidirInicio(Jugador *j1, Jugador *j2) {
         } else {
             printf("Empate. Se repite la tirada.\n");
         }
-    } while (dado1 == dado2);
-
-    return NULL;
+    } while (1);
 }
 
-// Mostrar los dados en fila con ¡ndice
+void mostrarMenu() {
+    printf("\n----- MENU PRINCIPAL -----\n");
+    printf("1 - JUGAR\n");
+    printf("2 - ESTADISTICAS\n");
+    printf("3 - CREDITOS\n");
+    printf("0 - SALIR\n");
+    printf("--------------------------\n");
+    printf("Seleccione una opcion: ");
+}
+
+void mostrarCreditos() {
+    printf("\nTrabajo practico realizado por:\n");
+    printf("- Soraya Zaragoza\n");
+    printf("- Rodrigo Garcia Dieguez\n");
+    printf("Equipo: Enfrentados 2025 - UTN\n");
+}
+
+void mostrarEstadisticas() {
+    printf("\nEstadisticas (por ahora no implementadas)\n");
+}
+
 void mostrarDadosConIndices(int dados[], int cantidad) {
     printf("Dados:     ");
     for (int i = 0; i < cantidad; i++) {
@@ -69,7 +82,6 @@ void mostrarDadosConIndices(int dados[], int cantidad) {
     printf("\n");
 }
 
-// Realizar un turno completo para un jugador
 void jugarTurno(Jugador* jugadorActual, Jugador* rival) {
     printf("\nTurno de %s:\n", jugadorActual->nombre);
 
@@ -87,7 +99,7 @@ void jugarTurno(Jugador* jugadorActual, Jugador* rival) {
     int suma = 0;
     int elegidos[20];
     int cantidadElegidos = 0;
-    int usados[20] = {0}; // Para no repetir un dado
+    int usados[20] = {0};
 
     printf("\nSelecciona los dados uno por uno (ingresa el indice). Ingresa 0 para rendirte:\n");
 
@@ -102,12 +114,12 @@ void jugarTurno(Jugador* jugadorActual, Jugador* rival) {
         }
 
         if (seleccion < 1 || seleccion > jugadorActual->cantidadDados || usados[seleccion - 1]) {
-            printf("Indice invalido o dado ya usado. Intente nuevamente.\n");
+            printf("Indice invalido o repetido. Intente nuevamente.\n");
             continue;
         }
 
-        int valorSeleccionado = jugadorActual->dados[seleccion - 1];
-        suma += valorSeleccionado;
+        int valor = jugadorActual->dados[seleccion - 1];
+        suma += valor;
         elegidos[cantidadElegidos++] = seleccion - 1;
         usados[seleccion - 1] = 1;
 
@@ -120,7 +132,6 @@ void jugarTurno(Jugador* jugadorActual, Jugador* rival) {
             printf("\n­Tirada exitosa!\n");
             printf("Ganaste %d puntos.\n", puntosGanados);
 
-            if (cantidadElegidos > jugadorActual->cantidadDados) cantidadElegidos = jugadorActual->cantidadDados;
             for (int i = 0; i < cantidadElegidos; i++) {
                 if (rival->cantidadDados < 20) {
                     rival->dados[rival->cantidadDados++] = jugadorActual->dados[elegidos[i]];
@@ -151,31 +162,6 @@ void jugarTurno(Jugador* jugadorActual, Jugador* rival) {
     printf("Dados restantes: %s: %d | %s: %d\n", jugadorActual->nombre, jugadorActual->cantidadDados, rival->nombre, rival->cantidadDados);
 }
 
-// Mostrar el menu principal
-void mostrarMenu() {
-    printf("\n----- MENU PRINCIPAL -----\n");
-    printf("1 - JUGAR\n");
-    printf("2 - ESTADISTICAS\n");
-    printf("3 - CREDITOS\n");
-    printf("0 - SALIR\n");
-    printf("--------------------------\n");
-    printf("Seleccione una opcion: ");
-}
-
-// Mostrar los creditos del TP
-void mostrarCreditos() {
-    printf("\nTrabajo practico realizado por:\n");
-    printf("- Soraya Zaragoza\n");
-    printf("- Rodrigo Garcia Dieguez\n");
-    printf("Equipo: Enfrentados 2025 - UTN\n");
-}
-
-// Mostrar mensaje de estadisticas
-void mostrarEstadisticas() {
-    printf("\nEstadisticas (por ahora no implementadas)\n");
-}
-
-// Funcion que inicia la partida
 void jugarPartida() {
     Jugador jugador1, jugador2;
 
@@ -187,26 +173,45 @@ void jugarPartida() {
 
     printf("\nComienza la partida real!\n");
 
-    jugarTurno(quienEmpieza, otro);
+    for (int ronda = 1; ronda <= 3; ronda++) {
+        printf("\n===== RONDA %d =====\n", ronda);
+
+        jugarTurno(quienEmpieza, otro);
+        if (quienEmpieza->cantidadDados == 0) {
+            printf("\n%s gan¢ la partida por quedarse sin dados.\n", quienEmpieza->nombre);
+            return;
+        }
+
+        jugarTurno(otro, quienEmpieza);
+        if (otro->cantidadDados == 0) {
+            printf("\n%s gan¢ la partida por quedarse sin dados.\n", otro->nombre);
+            return;
+        }
+    }
+
+    printf("\n===== FIN DEL JUEGO =====\n");
+    printf("Puntaje final:\n");
+    printf("%s: %d puntos\n", jugador1.nombre, jugador1.puntos);
+    printf("%s: %d puntos\n", jugador2.nombre, jugador2.puntos);
+
+    if (jugador1.puntos > jugador2.puntos) {
+        printf("\n­Gan¢ %s!\n", jugador1.nombre);
+    } else if (jugador2.puntos > jugador1.puntos) {
+        printf("\n­Gan¢ %s!\n", jugador2.nombre);
+    } else {
+        printf("\nEmpate.\n");
+    }
 }
 
-// PROGRAMA PRINCIPAL
 int main() {
     int opcion;
     char confirmar;
 
-    srand(time(NULL)); // Para generar numeros aleatorios diferentes cada vez
+    srand(time(NULL));
 
     do {
         mostrarMenu();
-
-        int resultado = scanf("%d", &opcion);
-
-        if (resultado != 1) {
-            printf("\nEntrada invalida. Por favor, ingrese un numero del menu.\n");
-            while (getchar() != '\n');
-            continue;
-        }
+        scanf("%d", &opcion);
 
         switch (opcion) {
             case 1:
