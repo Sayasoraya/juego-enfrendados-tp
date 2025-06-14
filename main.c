@@ -1,14 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>  // Necesario para usar rand()
-
-#define MAX_DADOS 20
-#define RONDAS_TOTALES 3
+#include <time.h>
 
 typedef struct {
     char nombre[30];
     int puntos;
-    int dados[MAX_DADOS];
+    int dados[20];
     int cantidadDados;
 } Jugador;
 
@@ -34,6 +31,7 @@ void inicializarJugadores(Jugador *j1, Jugador *j2) {
 
 Jugador* decidirInicio(Jugador *j1, Jugador *j2) {
     int dado1, dado2;
+
     do {
         dado1 = tirarDado6();
         dado2 = tirarDado6();
@@ -49,7 +47,9 @@ Jugador* decidirInicio(Jugador *j1, Jugador *j2) {
         } else {
             printf("Empate. Se repite la tirada.\n");
         }
-    } while (1);
+    } while (dado1 == dado2);
+
+    return NULL;
 }
 
 void mostrarMenu() {
@@ -63,10 +63,13 @@ void mostrarMenu() {
 }
 
 void mostrarCreditos() {
-    printf("\nTrabajo practico realizado por:\n");
-    printf("- Soraya Zaragoza\n");
-    printf("- Rodrigo Garcia Dieguez\n");
-    printf("Equipo: Enfrentados 2025 - UTN\n");
+    printf("\n----- CREDITOS -----\n");
+    printf("Trabajo practico integrador realizado por:\n");
+    printf("- Soraya Zaragoza | Legajo: 30656\n");
+    printf("- Rodrigo Garcia Dieguez | Legajo: 32655\n");
+    printf("Equipo: Mapache Team\n\n");
+    printf("Juego inventado por Angel Simon. Levemente inspirado en el juego Mafia.\n");
+    printf("Iconos: Freepik | Logo creado en Logo Maker\n");
 }
 
 void mostrarEstadisticas() {
@@ -86,8 +89,6 @@ void mostrarDadosConIndices(int dados[], int cantidad) {
 }
 
 void jugarTurno(Jugador* jugadorActual, Jugador* rival) {
-    if (jugadorActual->cantidadDados == 0) return;
-
     printf("\nTurno de %s:\n", jugadorActual->nombre);
 
     int dadoObj1 = tirarDado12();
@@ -102,9 +103,9 @@ void jugarTurno(Jugador* jugadorActual, Jugador* rival) {
     mostrarDadosConIndices(jugadorActual->dados, jugadorActual->cantidadDados);
 
     int suma = 0;
-    int elegidos[MAX_DADOS];
+    int elegidos[20];
+    int usados[20] = {0};
     int cantidadElegidos = 0;
-    int usados[MAX_DADOS] = {0};
 
     printf("\nSelecciona los dados uno por uno (ingresa el indice). Ingresa 0 para rendirte:\n");
 
@@ -118,15 +119,21 @@ void jugarTurno(Jugador* jugadorActual, Jugador* rival) {
             break;
         }
 
-        if (seleccion < 1 || seleccion > jugadorActual->cantidadDados || usados[seleccion - 1]) {
-            printf("Indice invalido o ya seleccionado. Intente nuevamente.\n");
+        if (seleccion < 1 || seleccion > jugadorActual->cantidadDados) {
+            printf("Indice invalido. Intente nuevamente.\n");
             continue;
         }
+
+        if (usados[seleccion - 1]) {
+            printf("Ese dado ya fue usado. Elegi otro.\n");
+            continue;
+        }
+
+        usados[seleccion - 1] = 1;
 
         int valorSeleccionado = jugadorActual->dados[seleccion - 1];
         suma += valorSeleccionado;
         elegidos[cantidadElegidos++] = seleccion - 1;
-        usados[seleccion - 1] = 1;
 
         printf("Suma actual: %d\n", suma);
 
@@ -137,8 +144,11 @@ void jugarTurno(Jugador* jugadorActual, Jugador* rival) {
             printf("\n­Tirada exitosa!\n");
             printf("Ganaste %d puntos.\n", puntosGanados);
 
+            if (cantidadElegidos > jugadorActual->cantidadDados)
+                cantidadElegidos = jugadorActual->cantidadDados;
+
             for (int i = 0; i < cantidadElegidos; i++) {
-                if (rival->cantidadDados < MAX_DADOS) {
+                if (rival->cantidadDados < 20) {
                     rival->dados[rival->cantidadDados++] = jugadorActual->dados[elegidos[i]];
                 }
             }
@@ -149,7 +159,8 @@ void jugarTurno(Jugador* jugadorActual, Jugador* rival) {
                 printf("%s se quedo sin dados. ­Gana automaticamente con 10000 puntos extra!\n", jugadorActual->nombre);
                 jugadorActual->puntos += 10000;
             }
-            return;
+
+            break;
         } else if (suma > numeroObjetivo) {
             printf("La suma supero el objetivo. Tirada fallida.\n");
             break;
@@ -166,22 +177,9 @@ void jugarTurno(Jugador* jugadorActual, Jugador* rival) {
     printf("Dados restantes: %s: %d | %s: %d\n", jugadorActual->nombre, jugadorActual->cantidadDados, rival->nombre, rival->cantidadDados);
 }
 
-void mostrarGanador(Jugador* j1, Jugador* j2) {
-    printf("\n===== RESULTADOS FINALES =====\n");
-    printf("%s - Puntos: %d | Dados restantes: %d\n", j1->nombre, j1->puntos, j1->cantidadDados);
-    printf("%s - Puntos: %d | Dados restantes: %d\n", j2->nombre, j2->puntos, j2->cantidadDados);
-
-    if (j1->puntos > j2->puntos) {
-        printf("\nEl ganador es: %s\n", j1->nombre);
-    } else if (j2->puntos > j1->puntos) {
-        printf("\nEl ganador es: %s\n", j2->nombre);
-    } else {
-        printf("\n­Empate!\n");
-    }
-}
-
 void jugarPartida() {
     Jugador jugador1, jugador2;
+
     printf("\n=== Iniciando el juego Enfrentados ===\n");
 
     inicializarJugadores(&jugador1, &jugador2);
@@ -190,17 +188,7 @@ void jugarPartida() {
 
     printf("\nComienza la partida real!\n");
 
-    for (int ronda = 1; ronda <= RONDAS_TOTALES; ronda++) {
-        printf("\n======= RONDA %d =======\n", ronda);
-
-        jugarTurno(quienEmpieza, otro);
-        if (quienEmpieza->cantidadDados == 0) break;
-
-        jugarTurno(otro, quienEmpieza);
-        if (otro->cantidadDados == 0) break;
-    }
-
-    mostrarGanador(&jugador1, &jugador2);
+    jugarTurno(quienEmpieza, otro);
 }
 
 int main() {
