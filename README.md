@@ -1,39 +1,42 @@
-# Enfrendados – Trabajo Práctico Integrador UTN 2025
+Enfrendados – Trabajo Práctico Integrador (UTN 2025)
 
-Este proyecto fue desarrollado para la materia de Programación en la UTN (1° cuatrimestre 2025).  
-El juego “Enfrendados” es un juego de dados para dos jugadores, creado en lenguaje C y pensado para ejecutarse por consola.
+Descripción del Juego:
+Enfrendados es un juego de dados para dos jugadores que combina azar, estrategia y cálculo. El objetivo principal es sumar la mayor cantidad de puntos posibles en un total de tres rondas o hasta que un jugador se quede sin dados.
 
-## ¿Qué hace el programa?
-- Muestra un menú principal con 4 opciones: JUGAR, ESTADÍSTICAS, CRÉDITOS y SALIR.
-- Permite cargar el nombre de los jugadores.
-- Lanza un dado por cada jugador para definir quién comienza.
-- (En desarrollo): Se está agregando la lógica de las rondas, puntajes y transferencias de dados.
+El juego se ejecuta desde consola, y a cada jugador se le asignan dados para competir por puntos. Se calcula una suma objetivo y los jugadores intentan igualarla con sus dados. Hay tiradas exitosas, transferencia de dados, penalizaciones y una victoria automática si un jugador se queda sin dados.
 
-## Cómo ejecutarlo
-1. Abrir el archivo `main.c` en Code::Blocks.
-2. Compilar con F9.
-3. Usar las flechas o escribir el número de opción para navegar el menú.
+Versión del Proyecto:
+Versión migrada a C++.
+El código fue desarrollado originalmente en lenguaje C, pero en esta versión se reescribió todo el programa en C++, cumpliendo con los requisitos formales del trabajo práctico.
 
-## Estado actual
-- Menú implementado  
-- Jugadores cargan su nombre
-- Lógica del juego en progreso
+Características implementadas:
+Menú principal con opciones: JUGAR, ESTADÍSTICAS, CRÉDITOS, SALIR.
 
-## Autores
-- Soraya Zaragoza  
-- Rodrigo García Diéguez
+Registro de nombres de los jugadores.
 
+Lógica de tiradas con dados de 6 y 12 caras.
 
-- ## Estado de desarrollo
+Puntajes automáticos y transferencia de dados.
 
-Este proyecto se encuentra **en construcción**  
-Vamos a seguir agregando la lógica del juego ronda por ronda, validaciones, puntajes y transferencias de dados.
+Determinación del ganador o empate al finalizar.
 
-Actualizaciones próximas:
-- Implementación completa de las 3 rondas
-- Cálculo de puntajes
-- Ganador automático y transferencia de dados
-- Función de estadísticas reales
+Visualización clara de cada ronda.
 
-Este repositorio se actualizará progresivamente durante el cursado del trabajo práctico.
+Validaciones de entrada y detección de errores comunes.
 
+Estadísticas que muestran el jugador con mayor y menor puntaje.
+
+Cómo ejecutar el juego:
+Abrir el proyecto en Codeblocks.
+Asegurarse de tener configurado el compilador para C++.
+Presionar F9 para compilar y ejecutar.
+Seguir las instrucciones del menú.
+
+Autores:
+Soraya Zaragoza 
+Rodrigo Garcia Dieguez
+Grupo: Mapache Team 
+
+Estado actual del desarrollo:
+El juego ya funciona correctamente.
+Todavía se están puliendo pequeños detalles visuales y de validación, por lo que este repositorio puede seguir actualizándose con mejoras.
